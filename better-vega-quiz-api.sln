@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D5E9BC86-FBF1-4913-8126-8A26DAB94941}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizWebApp", "src\QuizWebApp\QuizWebApp.csproj", "{ED84289F-7D77-4F29-9383-056B5A557DBB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ED84289F-7D77-4F29-9383-056B5A557DBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED84289F-7D77-4F29-9383-056B5A557DBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED84289F-7D77-4F29-9383-056B5A557DBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED84289F-7D77-4F29-9383-056B5A557DBB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ED84289F-7D77-4F29-9383-056B5A557DBB} = {D5E9BC86-FBF1-4913-8126-8A26DAB94941}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14F9A393-2026-4308-A01A-1656773E5F82}
+	EndGlobalSection
+EndGlobal
