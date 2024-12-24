@@ -14,4 +14,10 @@ public class UserRepository(AppDbContext db)
             .Where(u => u.Email == email)
             .FirstOrDefaultAsync();
     }
+
+    public void CreateUser(User user)
+    {
+        _db.Users.Add(user);
+        _db.SaveChanges();
+    }
 }

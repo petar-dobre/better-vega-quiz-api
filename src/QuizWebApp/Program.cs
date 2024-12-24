@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using QuizWebApp.Configuration;
 using Microsoft.EntityFrameworkCore;
+using QuizWebApp.Services;
+using QuizWebApp.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +39,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<UserRepository>();
 
 var app = builder.Build();
 

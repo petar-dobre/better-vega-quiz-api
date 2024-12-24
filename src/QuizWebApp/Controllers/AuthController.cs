@@ -21,7 +21,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginModel model)
+    public IActionResult Login([FromBody] LoginDto model)
     {
         if (model is { Username: "demo", Password: "password"})
         {

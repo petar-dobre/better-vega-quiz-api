@@ -2,7 +2,7 @@ namespace QuizWebApp.DTOs;
 
 using System.ComponentModel.DataAnnotations;
 
-public class LoginModel
+public class LoginDto
 {
     [Required(ErrorMessage = "Username is required")]
     public required string Username { get; set; }

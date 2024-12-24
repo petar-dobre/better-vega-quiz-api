@@ -1,3 +1,6 @@
+using Npgsql.Replication;
+using QuizWebApp.DTOs;
+
 namespace QuizWebApp.Domain.Models;
 
 public class User
@@ -36,5 +39,15 @@ public class User
     public string GetFullName()
     {
         return $"{FirstName} {LastName}";
+    }
+
+    public static User CreateFromDto(CreateUserDto createUserDto)
+    {
+        return new User(
+            firstName: createUserDto.FirstName,
+            lastName: createUserDto.LastName,
+            email: createUserDto.Email,
+            passwordHash: createUserDto.Password
+        );
     }
 }
