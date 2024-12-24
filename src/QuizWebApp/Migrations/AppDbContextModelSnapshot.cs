@@ -38,7 +38,9 @@ namespace QuizWebApp.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("IsAdmin")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -50,7 +52,7 @@ namespace QuizWebApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("user", (string)null);
                 });
 #pragma warning restore 612, 618
         }

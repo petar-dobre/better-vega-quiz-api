@@ -11,8 +11,8 @@ using QuizWebApp.Configuration;
 namespace QuizWebApp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241223134545_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241224150958_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,7 +41,9 @@ namespace QuizWebApp.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("IsAdmin")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -53,7 +55,7 @@ namespace QuizWebApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("user", (string)null);
                 });
 #pragma warning restore 612, 618
         }
