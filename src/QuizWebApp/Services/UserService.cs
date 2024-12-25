@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using QuizWebApp.Domain.Models;
 using QuizWebApp.DTOs;
 using QuizWebApp.Exceptions;
@@ -9,38 +11,80 @@ public class UserService(UserRepository userRepo)
 {
     UserRepository _repo => userRepo;
 
-    public async Task<User?> GetUserByEmailAsync(string email)
+    public async Task<List<UserResponseDto>> GetUserListAsync()
     {
-        try
+        var userList = await _repo.GetUserListAsync();
+
+        var responseItemList = new List<UserResponseDto>();
+        foreach (User user in userList)
         {
-            return await _repo.GetByEmailAsync(email);
+            responseItemList.Add(UserResponseDto.CreateFromModel(user));
         }
-        catch (Exception ex)
-        {
-            throw new ApplicationException("Unable to fetch user data.", ex);
-        }
+
+        return responseItemList;
     }
 
-    public async Task<User?> CreateUserAsync(CreateUserDto createUserDto)
+    public async Task<UserResponseDto> GetUserByIdAsync(int id)
     {
-        try 
+        var user = await _repo.GetUserByIdAsync(id);
+        if (user == null)
         {
-            var newUser = User.CreateFromDto(createUserDto);
-
-            var existingUser = await _repo.GetByEmailAsync(newUser.Email);
-            if (existingUser != null)
-            {
-                throw new AlreadyExistsException($"A user with email {newUser.Email} already exists.");
-            }
-
-            _repo.CreateUser(newUser);
-        
-            return newUser;
-        }
-        catch (Exception ex)
-        {
-            throw new ApplicationException("Unable to create a user.", ex);
+            throw new NotFoundException($"User with id {id} not found.");
         }
 
+        var userResponseDto = UserResponseDto.CreateFromModel(user);
+
+        return userResponseDto;
+    }
+
+    public async Task<UserResponseDto> GetUserByEmailAsync(string email)
+    {
+        var user = await _repo.GetByEmailAsync(email);
+        if (user == null)
+        {
+            throw new NotFoundException($"User with email {email} not found.");
+        }
+
+        var userResponseDto = UserResponseDto.CreateFromModel(user);
+
+        return userResponseDto;
+    }
+
+    public async Task<UserResponseDto> CreateUserAsync(UserCreateDto UserCreateDto)
+    {
+        var existingUser = await _repo.GetByEmailAsync(UserCreateDto.Email);
+        if (existingUser != null)
+        {
+            throw new AlreadyExistsException($"A user with email {UserCreateDto.Email} already exists.");
+        }
+
+        var newUser = User.CreateFromDto(UserCreateDto);
+
+        byte[] salt = RandomNumberGenerator.GetBytes(128 / 8);
+        string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+            password: UserCreateDto.Password!,
+            salt: salt,
+            prf: KeyDerivationPrf.HMACSHA256,
+            iterationCount: 100000,
+            numBytesRequested: 256 / 8
+        ));
+
+        newUser.UpdatePassword(hashedPassword);
+
+        _repo.CreateUser(newUser);
+
+        var userResponseDto = UserResponseDto.CreateFromModel(newUser);
+        return userResponseDto;
+    }
+
+    public async Task DeleteUserAsync(int id)
+    {
+        var user = await _repo.GetUserByIdAsync(id);
+        if (user == null)
+        {
+            throw new NotFoundException($"User with id {id} not found.");
+        }
+
+        _repo.DeleteUserAsync(user);
     }
 }

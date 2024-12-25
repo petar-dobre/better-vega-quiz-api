@@ -41,13 +41,13 @@ public class User
         return $"{FirstName} {LastName}";
     }
 
-    public static User CreateFromDto(CreateUserDto createUserDto)
+    public static User CreateFromDto(UserCreateDto UserCreateDto)
     {
         return new User(
-            firstName: createUserDto.FirstName,
-            lastName: createUserDto.LastName,
-            email: createUserDto.Email,
-            passwordHash: createUserDto.Password
+            firstName: UserCreateDto.FirstName,
+            lastName: UserCreateDto.LastName,
+            email: UserCreateDto.Email,
+            passwordHash: UserCreateDto.Password
         );
     }
 }
