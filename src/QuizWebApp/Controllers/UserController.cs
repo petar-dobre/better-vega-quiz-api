@@ -9,7 +9,7 @@ namespace QuizWebApp.Controllers;
 [Route("[controller]")]
 public class UserController(UserService userService) : ControllerBase
 {
-    UserService _userService => userService;
+    private readonly UserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
 
     [HttpGet("list")]
     public async Task<IActionResult> GetUserList()

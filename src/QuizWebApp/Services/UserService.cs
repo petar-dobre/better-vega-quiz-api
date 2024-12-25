@@ -9,7 +9,7 @@ namespace QuizWebApp.Services;
 
 public class UserService(UserRepository userRepo)
 {
-    UserRepository _repo => userRepo;
+    private readonly UserRepository _repo = userRepo ?? throw new ArgumentNullException(nameof(userRepo));
 
     public async Task<List<UserResponseDto>> GetUserListAsync()
     {

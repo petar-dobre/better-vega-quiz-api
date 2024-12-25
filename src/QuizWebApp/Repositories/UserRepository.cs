@@ -6,7 +6,7 @@ namespace QuizWebApp.Repositories;
 
 public class UserRepository(AppDbContext db)
 {
-    AppDbContext _db => db;
+    private readonly AppDbContext _db = db ?? throw new ArgumentNullException(nameof(db));
 
     public async Task<List<User>> GetUserListAsync()
     {
