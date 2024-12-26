@@ -7,13 +7,20 @@ using QuizWebApp.Repositories;
 
 namespace QuizWebApp.Services;
 
-public class UserService(UserRepository userRepo)
+public class UserService
 {
-    private readonly UserRepository _repo = userRepo ?? throw new ArgumentNullException(nameof(userRepo));
+    private readonly UserRepository _userRepository;
+    private readonly PasswordHasher _passwordHasher;
+
+    public UserService(UserRepository userRepository, PasswordHasher passwordHasher)
+    {
+        _userRepository = userRepository;
+        _passwordHasher = passwordHasher;
+    }
 
     public async Task<List<UserResponseDto>> GetUserListAsync()
     {
-        var userList = await _repo.GetUserListAsync();
+        var userList = await _userRepository.GetUserListAsync();
 
         var responseItemList = new List<UserResponseDto>();
         foreach (User user in userList)
@@ -26,7 +33,7 @@ public class UserService(UserRepository userRepo)
 
     public async Task<UserResponseDto> GetUserByIdAsync(int id)
     {
-        var user = await _repo.GetUserByIdAsync(id);
+        var user = await _userRepository.GetUserByIdAsync(id);
         if (user == null)
         {
             throw new NotFoundException($"User with id {id} not found.");
@@ -39,7 +46,7 @@ public class UserService(UserRepository userRepo)
 
     public async Task<UserResponseDto> GetUserByEmailAsync(string email)
     {
-        var user = await _repo.GetByEmailAsync(email);
+        var user = await _userRepository.GetByEmailAsync(email);
         if (user == null)
         {
             throw new NotFoundException($"User with email {email} not found.");
@@ -50,28 +57,20 @@ public class UserService(UserRepository userRepo)
         return userResponseDto;
     }
 
-    public async Task<UserResponseDto> CreateUserAsync(UserCreateDto UserCreateDto)
+    public async Task<UserResponseDto> CreateUserAsync(UserCreateDto userCreateDto)
     {
-        var existingUser = await _repo.GetByEmailAsync(UserCreateDto.Email);
+        var existingUser = await _userRepository.GetByEmailAsync(userCreateDto.Email);
         if (existingUser != null)
         {
-            throw new AlreadyExistsException($"A user with email {UserCreateDto.Email} already exists.");
+            throw new AlreadyExistsException($"A user with email {userCreateDto.Email} already exists.");
         }
 
-        var newUser = User.CreateFromDto(UserCreateDto);
+        var newUser = User.CreateFromDto(userCreateDto);
 
-        byte[] salt = RandomNumberGenerator.GetBytes(128 / 8);
-        string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-            password: UserCreateDto.Password!,
-            salt: salt,
-            prf: KeyDerivationPrf.HMACSHA256,
-            iterationCount: 100000,
-            numBytesRequested: 256 / 8
-        ));
-
+        var hashedPassword = _passwordHasher.HashPassword(userCreateDto.Password);
         newUser.UpdatePassword(hashedPassword);
 
-        _repo.CreateUser(newUser);
+        _userRepository.CreateUser(newUser);
 
         var userResponseDto = UserResponseDto.CreateFromModel(newUser);
         return userResponseDto;
@@ -79,12 +78,12 @@ public class UserService(UserRepository userRepo)
 
     public async Task DeleteUserAsync(int id)
     {
-        var user = await _repo.GetUserByIdAsync(id);
+        var user = await _userRepository.GetUserByIdAsync(id);
         if (user == null)
         {
             throw new NotFoundException($"User with id {id} not found.");
         }
 
-        _repo.DeleteUserAsync(user);
+        _userRepository.DeleteUserAsync(user);
     }
 }

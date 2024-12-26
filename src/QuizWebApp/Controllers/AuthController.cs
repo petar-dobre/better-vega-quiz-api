@@ -21,11 +21,11 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginDto model)
+    public IActionResult Login([FromBody] LoginRequestDto model)
     {
-        if (model is { Username: "demo", Password: "password"})
+        if (model is { Email: "demo", Password: "password"})
         {
-            var token = GenerateAccessToken(model.Username);
+            var token = GenerateAccessToken(model.Email);
             return Ok(new { AccessToken = new JwtSecurityTokenHandler().WriteToken(token)});
         }
 
