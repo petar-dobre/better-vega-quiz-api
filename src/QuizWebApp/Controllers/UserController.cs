@@ -64,6 +64,11 @@ public class UserController(UserService userService) : ControllerBase
     [HttpPost("")]
     public async Task<IActionResult> CreateUser([FromBody] UserCreateDto UserCreateDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest("");
+        }
+
         try
         {
             var newUser = await _userService.CreateUserAsync(UserCreateDto);

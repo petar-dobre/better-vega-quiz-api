@@ -1,6 +1,7 @@
 using QuizWebApp.Configuration;
 using QuizWebApp.Extensions;
 using Microsoft.OpenApi.Models;
+using QuizWebApp.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,10 @@ builder.Services.ConfigureServices();
 
 // builder.WebHost.UseUrls("http://0.0.0.0:80");
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => 
+{
+    options.Filters.Add<ValidationErrorFilter>();
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {

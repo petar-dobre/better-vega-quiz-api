@@ -1,53 +1,32 @@
 namespace QuizWebApp.Controllers;
 
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using QuizWebApp.Configuration;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Options;
 using QuizWebApp.DTOs;
+using QuizWebApp.Services;
 
 [ApiController]
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly JwtSettings _jwtSettings;
+    private readonly AuthService _authService;
 
-    public AuthController(IOptions<JwtSettings> jwtSettings)
+    public AuthController(AuthService authService)
     {
-        _jwtSettings = jwtSettings.Value;
+        _authService = authService;
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginRequestDto model)
+    public async Task<IActionResult> Login([FromBody] LoginRequestDto loginDto)
     {
-        if (model is { Email: "demo", Password: "password"})
+        try
         {
-            var token = GenerateAccessToken(model.Email);
-            return Ok(new { AccessToken = new JwtSecurityTokenHandler().WriteToken(token)});
+            var loginResponse = await _authService.Login(loginDto);
+            return Ok(loginResponse);
         }
-
-        return Unauthorized("Invalid Credentials");
-    }
-
-    private JwtSecurityToken GenerateAccessToken(string userName)
-    {
-        var claims = new List<Claim>
+        catch (UnauthorizedAccessException ex)
         {
-            new(ClaimTypes.Name, userName),
-        };
-
-        var token = new JwtSecurityToken(
-            issuer: _jwtSettings.Issuer,
-            audience: _jwtSettings.Audience,
-            claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(1),
-            signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secretkey)),
-            SecurityAlgorithms.HmacSha256)
-        );
-
-        return token;
+            return StatusCode(401, new { message = ex.Message });
+        }
     }
+
 }

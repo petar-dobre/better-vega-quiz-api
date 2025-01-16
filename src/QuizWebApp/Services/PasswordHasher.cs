@@ -16,7 +16,8 @@ public class PasswordHasher
             numBytesRequested: 256 / 8
         ));
 
-        return hashedPassword;
+        string saltBase64 = Convert.ToBase64String(salt);
+        return $"{saltBase64}:{hashedPassword}";
     }
 
     public bool VerifyHashedPassword(string hashedPasswordWithSalt, string password)
@@ -27,12 +28,13 @@ public class PasswordHasher
             throw new ArgumentException("Invalid hashed password format.");
         }
 
-        byte[] salt = Convert.FromBase64String(parts[0]);
-
+        string saltBase64 = parts[0];
         string storedHash = parts[1];
 
+        byte[] salt = Convert.FromBase64String(saltBase64);
+
         string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-            password: password,
+            password: password!,
             salt: salt,
             prf: KeyDerivationPrf.HMACSHA256,
             iterationCount: 100000,

@@ -39,5 +39,6 @@ public static class ServiceExtensions
         services.AddScoped<UserService>();
         services.AddScoped<UserRepository>();
         services.AddScoped<PasswordHasher>();
+        services.AddScoped<AuthService>();
     }
 }
