@@ -7,16 +7,17 @@ using QuizWebApp.Configuration;
 using QuizWebApp.DTOs;
 using QuizWebApp.Exceptions;
 using QuizWebApp.Repositories;
+using QuizWebApp.Interfaces;
 
 namespace QuizWebApp.Services;
 
-public class AuthService
+public class AuthService : IAuthService
 {
     private readonly JwtSettings _jwtSettings;
-    private readonly PasswordHasher _passwordHasher;
-    private readonly UserRepository _userRepository;
+    private readonly IPasswordHasher _passwordHasher;
+    private readonly IUserRepository _userRepository;
 
-    public AuthService(IOptions<JwtSettings> jwtSettings, PasswordHasher passwordHasher, UserRepository userRepository)
+    public AuthService(IOptions<JwtSettings> jwtSettings, IPasswordHasher passwordHasher, IUserRepository userRepository)
     {
         _jwtSettings = jwtSettings.Value;
         _passwordHasher = passwordHasher;

@@ -1,3 +1,5 @@
+namespace QuizWebApp.Interfaces;
+
 public interface IPasswordHasher
 {
     string HashPassword(string password);

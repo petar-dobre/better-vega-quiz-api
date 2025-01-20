@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using QuizWebApp.Configuration;
 using QuizWebApp.Repositories;
 using QuizWebApp.Services;
+using QuizWebApp.Interfaces;
 
 namespace QuizWebApp.Extensions;
 
@@ -36,9 +37,9 @@ public static class ServiceExtensions
 
     public static void ConfigureServices(this IServiceCollection services)
     {
-        services.AddScoped<UserService>();
-        services.AddScoped<UserRepository>();
-        services.AddScoped<PasswordHasher>();
-        services.AddScoped<AuthService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IAuthService, AuthService>();
     }
 }

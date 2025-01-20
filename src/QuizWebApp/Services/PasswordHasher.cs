@@ -1,9 +1,10 @@
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using QuizWebApp.Interfaces;
 
 namespace QuizWebApp.Services;
 
-public class PasswordHasher
+public class PasswordHasher : IPasswordHasher
 {
     public string HashPassword(string password)
     {

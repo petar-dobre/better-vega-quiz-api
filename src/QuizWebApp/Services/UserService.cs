@@ -4,15 +4,16 @@ using QuizWebApp.Domain.Models;
 using QuizWebApp.DTOs;
 using QuizWebApp.Exceptions;
 using QuizWebApp.Repositories;
+using QuizWebApp.Interfaces;
 
 namespace QuizWebApp.Services;
 
-public class UserService
+public class UserService : IUserService
 {
-    private readonly UserRepository _userRepository;
-    private readonly PasswordHasher _passwordHasher;
+    private readonly IUserRepository _userRepository;
+    private readonly IPasswordHasher _passwordHasher;
 
-    public UserService(UserRepository userRepository, PasswordHasher passwordHasher)
+    public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher)
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;

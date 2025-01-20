@@ -1,12 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using QuizWebApp.Configuration;
 using QuizWebApp.Domain.Models;
+using QuizWebApp.Interfaces;
 
 namespace QuizWebApp.Repositories;
 
-public class UserRepository(AppDbContext db)
+public class UserRepository : IUserRepository
 {
-    private readonly AppDbContext _db = db ?? throw new ArgumentNullException(nameof(db));
+    private readonly AppDbContext _db;
+
+    public UserRepository(AppDbContext db)
+    {
+        _db = db;
+    }
 
     public async Task<List<User>> GetUserListAsync()
     {

@@ -1,15 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
 using QuizWebApp.DTOs;
 using QuizWebApp.Exceptions;
-using QuizWebApp.Services;
+using QuizWebApp.Interfaces;
 
 namespace QuizWebApp.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController(UserService userService) : ControllerBase
+public class UserController : ControllerBase
 {
-    private readonly UserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+    private readonly IUserService _userService;
+
+    public UserController(IUserService userService)
+    {
+        _userService = userService;
+    }
 
     [HttpGet("list")]
     public async Task<IActionResult> GetUserList()

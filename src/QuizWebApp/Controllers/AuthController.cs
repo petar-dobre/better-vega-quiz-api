@@ -2,15 +2,15 @@ namespace QuizWebApp.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
 using QuizWebApp.DTOs;
-using QuizWebApp.Services;
+using QuizWebApp.Interfaces;
 
 [ApiController]
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly AuthService _authService;
+    private readonly IAuthService _authService;
 
-    public AuthController(AuthService authService)
+    public AuthController(IAuthService authService)
     {
         _authService = authService;
     }
