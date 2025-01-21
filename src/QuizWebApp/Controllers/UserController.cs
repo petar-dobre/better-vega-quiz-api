@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using QuizWebApp.DTOs;
-using QuizWebApp.Exceptions;
 using QuizWebApp.Interfaces;
 
 namespace QuizWebApp.Controllers;
@@ -19,51 +18,22 @@ public class UserController : ControllerBase
     [HttpGet("list")]
     public async Task<IActionResult> GetUserList()
     {
-        try
-        {
-            var userList = await _userService.GetUserListAsync();
-            return Ok(userList);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { message = ex.Message });
-        }
+        var userList = await _userService.GetUserListAsync();
+        return Ok(userList);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById([FromRoute] int id)
     {
-        try
-        {
-            var user = await _userService.GetUserByIdAsync(id);
-            return Ok(user);
-        }
-        catch (NotFoundException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { message = ex.Message });
-        }
+        var user = await _userService.GetUserByIdAsync(id);
+        return Ok(user);
     }
 
     [HttpGet("email")]
     public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
     {
-        try
-        {
-            var user = await _userService.GetUserByEmailAsync(email);
-            return Ok(user);
-        }
-        catch (NotFoundException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { message = ex.Message });
-        }
+        var user = await _userService.GetUserByEmailAsync(email);
+        return Ok(user);
     }
 
     [HttpPost("")]
@@ -71,35 +41,18 @@ public class UserController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            return BadRequest("");
+            // Todo change
+            return BadRequest("Bad request");
         }
 
-        try
-        {
-            var newUser = await _userService.CreateUserAsync(UserCreateDto);
-            return CreatedAtAction(nameof(GetUserByEmail), new { email = UserCreateDto.Email }, newUser);
-        }
-        catch (AlreadyExistsException ex)
-        {
-            return Conflict(new { message = ex.Message });
-        }
+        var newUser = await _userService.CreateUserAsync(UserCreateDto);
+        return CreatedAtAction(nameof(GetUserByEmail), new { email = UserCreateDto.Email }, newUser);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser([FromRoute] int id)
     {
-        try
-        {
-            await _userService.DeleteUserAsync(id);
-            return Ok(new { message = "User deleted." });
-        }
-        catch (NotFoundException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
-        catch (ApplicationException ex)
-        {
-            return StatusCode(500, new { message = ex.Message });
-        }
+        await _userService.DeleteUserAsync(id);
+        return Ok(new { message = "User deleted." });
     }
 }

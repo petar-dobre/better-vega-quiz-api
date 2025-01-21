@@ -1,5 +1,6 @@
-using QuizWebApp.Configuration;
 using Microsoft.EntityFrameworkCore;
+using QuizWebApp.Configuration;
+using QuizWebApp.Middleware;
 
 namespace QuizWebApp.Extensions;
 
@@ -23,5 +24,10 @@ public static class AppBuilderExtensions
                 context.Database.Migrate();
             }
         }
+    }
+
+    public static void UseExceptionMiddleware(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<ExceptionMiddleware>();
     }
 }

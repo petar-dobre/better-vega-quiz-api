@@ -1,6 +1,6 @@
+using Microsoft.OpenApi.Models;
 using QuizWebApp.Configuration;
 using QuizWebApp.Extensions;
-using Microsoft.OpenApi.Models;
 using QuizWebApp.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +19,7 @@ builder.Services.ConfigureServices();
 
 // builder.WebHost.UseUrls("http://0.0.0.0:80");
 
-builder.Services.AddControllers(options => 
+builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ValidationErrorFilter>();
 });
@@ -35,17 +35,22 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// Configure middleware
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwaggerWithAuthorization();
 }
 
+app.UseExceptionMiddleware();
+
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.ApplyPendingMigrations();
 
 app.Run();
