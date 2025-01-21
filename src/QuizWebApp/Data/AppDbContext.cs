@@ -14,11 +14,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<User>(entity =>
         {
             entity.ToTable("user");
-            entity.HasKey(u => u.Id);
-            entity.Property(u => u.Email).IsRequired();
             entity.Property(u => u.FirstName).IsRequired();
             entity.Property(u => u.LastName).IsRequired();
-            entity.Property(u => u.Password).IsRequired();
             entity.Property(u => u.IsAdmin).IsRequired().HasDefaultValue(false);
         });
     }

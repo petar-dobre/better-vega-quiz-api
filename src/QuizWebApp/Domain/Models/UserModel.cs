@@ -1,14 +1,12 @@
+using Microsoft.AspNetCore.Identity;
 using QuizWebApp.DTOs;
 
 namespace QuizWebApp.Domain.Models;
 
-public class User
+public class User : IdentityUser
 {
-    public int Id { get; private set; }
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
-    public string Email { get; private set; }
-    public string Password { get; private set; }
     public bool IsAdmin { get; private set; }
 
     public User(string firstName, string lastName, string email, string password, bool isAdmin = false)
@@ -16,7 +14,6 @@ public class User
         FirstName = firstName;
         LastName = lastName;
         Email = email;
-        Password = password;
         IsAdmin = isAdmin;
     }
 
@@ -30,14 +27,14 @@ public class User
         IsAdmin = false;
     }
 
-    public void UpdatePassword(string password)
-    {
-        Password = password;
-    }
-
     public string GetFullName()
     {
         return $"{FirstName} {LastName}";
+    }
+
+    public void UpdatePassword(string password)
+    {
+        PasswordHash = password;
     }
 
     public static User CreateFromDto(UserCreateDto UserCreateDto)

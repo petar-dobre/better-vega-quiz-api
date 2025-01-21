@@ -5,8 +5,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using QuizWebApp.Configuration;
 using QuizWebApp.DTOs;
-using QuizWebApp.Exceptions;
-using QuizWebApp.Repositories;
 using QuizWebApp.Interfaces;
 
 namespace QuizWebApp.Services;
@@ -32,17 +30,18 @@ public class AuthService : IAuthService
             throw new UnauthorizedAccessException("Login failed due to invalid credentials.");
         }
 
-        var passwordMatched = _passwordHasher.VerifyHashedPassword(user.Password, loginRequestDto.Password);
+        var passwordMatched = _passwordHasher.VerifyHashedPassword(user.PasswordHash!, loginRequestDto.Password);
         if (passwordMatched == false)
         {
             throw new UnauthorizedAccessException("Login failed due to invalid credentials.");
         }
 
-        var token = GenerateAccessToken(user.Email);
+        var token = GenerateAccessToken(user.Email!);
 
-        return new LoginResponseDto{
+        return new LoginResponseDto
+        {
             AccessToken = new JwtSecurityTokenHandler().WriteToken(token)
-        };    
+        };
     }
 
     private JwtSecurityToken GenerateAccessToken(string email)

@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using QuizWebApp.Configuration;
+using QuizWebApp.Domain.Models;
 using QuizWebApp.Extensions;
 using QuizWebApp.Filters;
 
@@ -16,6 +18,10 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSet
 builder.Services.ConfigureJwtAuthentication(configuration);
 builder.Services.ConfigureDbContext(configuration);
 builder.Services.ConfigureServices();
+
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
 
 // builder.WebHost.UseUrls("http://0.0.0.0:80");
 
