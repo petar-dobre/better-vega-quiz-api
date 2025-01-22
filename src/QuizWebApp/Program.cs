@@ -1,27 +1,20 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using QuizWebApp.Configuration;
-using QuizWebApp.Domain.Models;
 using QuizWebApp.Extensions;
 using QuizWebApp.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Load configuration
-var configuration = new ConfigurationBuilder()
-    .SetBasePath(builder.Environment.ContentRootPath)
-    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-    .Build();
+var configuration = builder.Configuration;
 
 // Configure services
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 builder.Services.ConfigureJwtAuthentication(configuration);
 builder.Services.ConfigureDbContext(configuration);
-builder.Services.ConfigureServices();
+builder.Services.ConfigureIdentity(configuration);
+builder.Services.RegisterServices();
 
-builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
 
 // builder.WebHost.UseUrls("http://0.0.0.0:80");
 

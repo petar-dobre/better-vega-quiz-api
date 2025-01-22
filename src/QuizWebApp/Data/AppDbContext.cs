@@ -1,22 +1,16 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using QuizWebApp.Domain.Models;
 
 namespace QuizWebApp.Configuration;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public class AppDbContext : IdentityDbContext<User, IdentityRole, string>
 {
-    public required DbSet<User> Users { get; set; }
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<User>(entity =>
-        {
-            entity.ToTable("user");
-            entity.Property(u => u.FirstName).IsRequired();
-            entity.Property(u => u.LastName).IsRequired();
-            entity.Property(u => u.IsAdmin).IsRequired().HasDefaultValue(false);
-        });
     }
 }

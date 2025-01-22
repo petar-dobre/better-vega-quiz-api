@@ -1,9 +1,6 @@
-using System.Security.Cryptography;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using QuizWebApp.Domain.Models;
 using QuizWebApp.DTOs;
 using QuizWebApp.Exceptions;
-using QuizWebApp.Repositories;
 using QuizWebApp.Interfaces;
 
 namespace QuizWebApp.Services;
@@ -66,10 +63,16 @@ public class UserService : IUserService
             throw new AlreadyExistsException($"A user with email {userCreateDto.Email} already exists.");
         }
 
-        var newUser = User.CreateFromDto(userCreateDto);
+        var newUser = new User
+        {
+            FirstName = userCreateDto.FirstName,
+            LastName = userCreateDto.LastName,
+            Email = userCreateDto.Email,
+            PasswordHash = userCreateDto.Password
+        };
 
         var hashedPassword = _passwordHasher.HashPassword(userCreateDto.Password);
-        newUser.UpdatePassword(hashedPassword);
+        newUser.PasswordHash = hashedPassword;
 
         _userRepository.CreateUser(newUser);
 

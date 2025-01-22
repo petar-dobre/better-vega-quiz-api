@@ -1,18 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using QuizWebApp.Configuration;
+using QuizWebApp.Data;
 using QuizWebApp.Middleware;
 
 namespace QuizWebApp.Extensions;
 
 public static class AppBuilderExtensions
 {
-    public static void UseSwaggerWithAuthorization(this IApplicationBuilder app)
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-    }
-
-    public static void ApplyPendingMigrations(this IApplicationBuilder app)
+    async public static void ApplyPendingMigrations(this IApplicationBuilder app)
     {
         using (var scope = app.ApplicationServices.CreateScope())
         {
@@ -23,11 +18,25 @@ public static class AppBuilderExtensions
             {
                 context.Database.Migrate();
             }
+
+            var seeder = services.GetRequiredService<DataSeeder>();
+            await seeder.SeedAsync();
         }
+    }
+
+    public static void UseSwaggerWithAuthorization(this IApplicationBuilder app)
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
     }
 
     public static void UseExceptionMiddleware(this IApplicationBuilder app)
     {
         app.UseMiddleware<ExceptionMiddleware>();
+    }
+
+    public static void UseConfigureApplicationServices(this IApplicationBuilder app)
+    {
+
     }
 }
